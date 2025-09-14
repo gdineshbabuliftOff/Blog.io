@@ -9,19 +9,46 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@dataconnect/generated": "file:src/dataconnect-generated",
+    "@google/generative-ai": "^0.24.1",
+    "@tiptap/core": "^3.4.2",
+    "@tiptap/extension-bubble-menu": "^3.4.2",
+    "@tiptap/extension-color": "^3.4.1",
+    "@tiptap/extension-font-family": "^3.4.1",
+    "@tiptap/extension-gapcursor": "^3.4.2",
+    "@tiptap/extension-highlight": "^3.4.1",
+    "@tiptap/extension-history": "^3.4.2",
+    "@tiptap/extension-image": "^3.4.2",
+    "@tiptap/extension-link": "^3.4.2",
+    "@tiptap/extension-text-align": "^3.4.2",
+    "@tiptap/extension-text-style": "^3.4.1",
+    "@tiptap/extension-typography": "^3.4.1",
+    "@tiptap/react": "^3.4.2",
+    "@tiptap/starter-kit": "^3.4.2",
+    "firebase": "^12.2.1",
+    "formik": "^2.4.6",
+    "js-cookie": "^3.0.5",
+    "lucide-react": "^0.542.0",
+    "next": "15.5.0",
     "react": "19.1.0",
+    "react-color": "^2.19.3",
     "react-dom": "19.1.0",
-    "next": "15.5.0"
+    "recharts": "^3.1.2",
+    "swr": "^2.3.6",
+    "yup": "^1.7.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "@types/use-resize-observer": "^6.0.0",
+    "@types/uuid": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
-    "@eslint/eslintrc": "^3"
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

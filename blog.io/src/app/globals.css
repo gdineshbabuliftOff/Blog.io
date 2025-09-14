@@ -24,3 +24,30 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+::-webkit-scrollbar {
+    width: 0px;          /* vertical */
+    height: 4px;         /* horizontal */
+}
+
+::-webkit-scrollbar-track {
+    background: bg-gray-900/80;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: bg-gray-900/80;
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: bg-gray-900/80; /* subtle hover instead of transparent */
+}
+
+@layer components {
+  .auth-input {
+    @apply mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-fuchsia-500 focus:border-fuchsia-500;
+  }
+  .auth-error {
+    @apply text-red-400 text-xs mt-1;
+  }
+}
