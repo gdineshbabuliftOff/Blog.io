@@ -65,7 +65,7 @@ const ForgotPasswordPage = () => {
               disabled={isSubmitting || !!message}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-full flex justify-center py-3 px-4 rounded-md font-medium text-white bg-fuchsia-600 hover:bg-fuchsia-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-fuchsia-500 disabled:opacity-50"
+              className="w-full flex cursor-pointer justify-center py-3 px-4 rounded-md font-medium text-white bg-fuchsia-600 hover:bg-fuchsia-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-fuchsia-500 disabled:opacity-50"
             >
               {isSubmitting ? 'Sending Link...' : 'Send Reset Link'}
             </motion.button>

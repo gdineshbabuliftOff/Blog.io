@@ -3,12 +3,7 @@
 import { cookies } from "next/headers";
 
 export async function createSession(idToken: string) {
-  cookies().set("blogToken", idToken, {
-    httpOnly: true,
-    secure: true,
-    maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
-    path: "/",
-  });
+  cookies().set("blogToken", idToken);
 }
 
 export async function clearSession() {
