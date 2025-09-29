@@ -21,7 +21,7 @@ import * as lucideIcons from 'lucide-react';
 
 const apiKey = "AIzaSyAT5DlkF5bbvu7_vQIXr3sjAqz40_5q9A0";
 const genAI = new GoogleGenerativeAI(apiKey);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 const generateContentWithGemini = async (prompt: string): Promise<string> => {
   try {
@@ -411,227 +411,285 @@ const editorReducer = produce((draft: EditorState, action: EditorAction) => {
 });
 
 const createNewElement = (type: ElementType): Element | Element[] => {
-    const id = getUniqueId(type);
-    const defaultStyles = { desktop: { default: {}, hover: {} }, tablet: { default: {}, hover: {} }, mobile: { default: {}, hover: {} } };
-    const baseElement: Omit<Element, 'id'> & { type: ElementType } = { type, styles: JSON.parse(JSON.stringify(defaultStyles)), children: [] };
-    
-    switch(type) {
-        case 'section': baseElement.styles.desktop.default = { minHeight: '100px', width: '100%', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }; break;
-        case 'box': baseElement.styles.desktop.default = { minHeight: '100px', width: '100%', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '16px' }; break;
-        case 'card': baseElement.styles.desktop.default = { width: '100%', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '16px', backgroundColor: '#ffffff', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)', borderRadius: '12px' }; break;
-        case 'video-right-section':
-            baseElement.type = 'section';
-            baseElement.name = "Video Right Section";
-            baseElement.content = JSON.stringify({ videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ' });
-            baseElement.styles.desktop.default = { width: '100%', padding: '20px', display: 'flex', gap: '20px', alignItems: 'stretch' };
-            baseElement.children = [];
-            break;
-        case 'video-left-section':
-            baseElement.type = 'section';
-            baseElement.name = "Video Left Section";
-            baseElement.content = JSON.stringify({ videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ' });
-            baseElement.styles.desktop.default = { width: '100%', padding: '20px', display: 'flex', gap: '20px', alignItems: 'stretch' };
-            baseElement.children = [];
-            break;
-        case 'right-image-section':
-            baseElement.type = 'section';
+    const id = getUniqueId(type);
+    const defaultStyles = { desktop: { default: {}, hover: {} }, tablet: { default: {}, hover: {} }, mobile: { default: {}, hover: {} } };
+    const baseElement: Omit<Element, 'id'> & { type: ElementType } = { type, styles: JSON.parse(JSON.stringify(defaultStyles)), children: [] };
+    
+    switch(type) {
+        case 'section': baseElement.styles.desktop.default = { minHeight: '100px', width: '100%', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }; break;
+        case 'box': baseElement.styles.desktop.default = { minHeight: '100px', width: '100%', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '16px' }; break;
+        case 'card': baseElement.styles.desktop.default = { width: '100%', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '16px', backgroundColor: '#ffffff', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)', borderRadius: '12px' }; break;
+        case 'video-right-section':
+            baseElement.name = "Video Right Section";
+            baseElement.content = JSON.stringify({ videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ' });
+            baseElement.styles.desktop.default = { width: '100%', padding: '20px', display: 'flex', gap: '20px', alignItems: 'stretch' };
+            break;
+        case 'video-left-section':
+            baseElement.name = "Video Left Section";
+            baseElement.content = JSON.stringify({ videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ' });
+            baseElement.styles.desktop.default = { width: '100%', padding: '20px', display: 'flex', gap: '20px', alignItems: 'stretch' };
+            break;
+        case 'right-image-section':
             baseElement.name = 'Image Right Section';
             baseElement.content = JSON.stringify({ imageSrc: 'https://placehold.co/600x400' });
             baseElement.styles.desktop.default = { width: '100%', padding: '20px', display: 'flex', gap: '20px', alignItems: 'stretch' };
-            baseElement.children = [];
             break;
-        case 'left-image-section':
-            baseElement.type = 'section';
+        case 'left-image-section':
             baseElement.name = 'Image Left Section';
             baseElement.content = JSON.stringify({ imageSrc: 'https://placehold.co/600x400' });
             baseElement.styles.desktop.default = { width: '100%', padding: '20px', display: 'flex', gap: '20px', alignItems: 'stretch' };
-            baseElement.children = [];
             break;
-        case 'horizontal-scroll':
-            baseElement.name = 'Horizontal Scroll';
-            baseElement.styles.desktop.default = { width: '100%', maxWidth: '100%', display: 'grid', gridAutoFlow: 'column', padding: '20px 0', position: 'relative' };
-            baseElement.children = [
-                createNewElement('preview-card') as Element,
-                createNewElement('preview-card') as Element,
-            ];
-            break;
-        case 'auto-scroll':
-            baseElement.name = 'Auto Scroll';
-            baseElement.styles.desktop.default = { width: '100%', maxWidth: '100%', position: 'relative', overflow: 'hidden' };
-            baseElement.content = JSON.stringify({ delay: 3000 });
-            baseElement.children = [
-                createNewElement('preview-card') as Element,
-                createNewElement('preview-card') as Element,
-                createNewElement('preview-card') as Element,
-                createNewElement('preview-card') as Element,
-            ];
-            break;
-        case 'single-auto-scroll':
-            baseElement.name = 'Single Auto Scroll';
-            baseElement.styles.desktop.default = { width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', minHeight: '400px' };
-            baseElement.content = JSON.stringify({ delay: 3000, transition: 'fade' });
-            baseElement.children = [
-                createNewElement('detail-card') as Element,
-                createNewElement('detail-card') as Element,
-                createNewElement('profile-card') as Element,
-            ];
-            break;
-        case 'image-carousel':
-            baseElement.name = 'Image Carousel';
-            baseElement.styles.desktop.default = { width: '100%', height: '500px', position: 'relative', overflow: 'hidden'};
-            baseElement.content = JSON.stringify({ delay: 3000 });
-            baseElement.children = [
-                { ...(createNewElement('image') as Element), styles: { desktop: { default: { width: '100%', height: '100%', objectFit: 'cover' }}}},
-                { ...(createNewElement('image') as Element), content: 'https://placehold.co/1200x500/1e3a8a/ffffff', styles: { desktop: { default: { width: '100%', height: '100%', objectFit: 'cover' }}}},
-            ];
-            break;
-        case 'hero-slider':
-            baseElement.name = 'Hero Slider';
-            baseElement.styles.desktop.default = { width: '100%', height: '500px', position: 'relative', overflow: 'hidden', color: '#ffffff'};
-            baseElement.content = JSON.stringify({ delay: 4000 });
-            baseElement.children = [
-                { ...(createNewElement('box') as Element),
-                  name: 'Hero Slide',
-                  styles: { desktop: { default: { backgroundImage: 'url(https://placehold.co/1200x500/4f46e5/ffffff)', backgroundSize: 'cover', backgroundPosition: 'center', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px' }}},
-                  children: [
-                      { ...(createNewElement('heading') as Element), content: '<h1>Slide 1 Title</h1>', styles: { desktop: { default: { color: '#ffffff' }}}},
-                      { ...(createNewElement('paragraph') as Element), content: '<p>Description for the first slide.</p>', styles: { desktop: { default: { color: '#eeeeee' }}}},
-                  ]
-                },
-                { ...(createNewElement('box') as Element),
-                  name: 'Hero Slide',
-                  styles: { desktop: { default: { backgroundImage: 'url(https://placehold.co/1200x500/1e3a8a/ffffff)', backgroundSize: 'cover', backgroundPosition: 'center', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px'}}},
-                  children: [
-                      { ...(createNewElement('heading') as Element), content: '<h1>Slide 2 Title</h1>', styles: { desktop: { default: { color: '#ffffff' }}}},
-                  ]
-                },
-            ];
-            break;
-        case 'accordion':
-            baseElement.name = 'Accordion';
-            baseElement.content = JSON.stringify({ title: 'Click to Expand' });
-            baseElement.styles.desktop.default = { width: '100%', border: '1px solid #e5e7eb', borderRadius: '8px', color: '#111827' };
-            break;
-        case 'feature-grid':
-            baseElement.type = 'section';
-            baseElement.name = "Feature Grid";
-            baseElement.styles.desktop.default = { width: '100%', padding: '40px 20px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px'};
-            baseElement.children = [
-                createNewElement('feature-block') as Element,
-                createNewElement('feature-block') as Element,
-                createNewElement('feature-block') as Element,
-            ];
-            break;
-        case 'feature-block':
-            baseElement.content = JSON.stringify({ icon: 'Star', title: 'Feature Title', text: 'Describe the feature in a few words.'});
-            baseElement.styles.desktop.default = { display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '12px' };
-            break;
-        case 'steps':
-            baseElement.type = 'section';
-            baseElement.name = 'Steps Section';
-            baseElement.content = JSON.stringify({ columnCount: 3 });
-            baseElement.children = [
-                { ...createNewElement('heading') as Element, content: '<h2>Get Started in 3 Easy Steps</h2>'},
-                { ...createNewElement('columns') as Element, content: JSON.stringify({ columns: [
-                    { id: getUniqueId('column_internal'), children: [createNewElement('step-block') as Element] },
-                    { id: getUniqueId('column_internal'), children: [createNewElement('step-block') as Element] },
-                    { id: getUniqueId('column_internal'), children: [createNewElement('step-block') as Element] },
-                ]})}
-            ];
-            break;
-        case 'step-block':
-            baseElement.content = JSON.stringify({ step: '01', title: 'Step Title', text: 'Explain the step here.' });
-            break;
-        case 'testimonial':
-            baseElement.content = JSON.stringify({ avatar: 'https://placehold.co/100x100', quote: 'This is an amazing product!', name: 'Jane Doe', title: 'CEO, Company' });
-            baseElement.styles.desktop.default = { width: '100%', maxWidth: '600px', backgroundColor: '#ffffff', color: '#111827', padding: '24px', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '16px' };
-            break;
-        case 'faq':
-            baseElement.content = JSON.stringify({ items: [{id: getUniqueId('faq-item'), question: 'Is this a question?', answer: 'Yes, and this is the answer.', questionColor: '#111827', answerColor: '#4B5563'}]});
-            baseElement.styles.desktop.default = { width: '100%', maxWidth: '700px' };
-            break;
-        case 'preview-card':
-            baseElement.type = 'card';
-            baseElement.name = "Preview Card";
-            baseElement.styles.desktop.default = { width: '350px', flexShrink: 0, alignSelf: 'center', backgroundColor: '#ffffff', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)', overflow: 'hidden', color: '#111827', padding: '0px', alignItems: 'flex-start' };
-            baseElement.children = [
-                {...createNewElement('image') as Element, content: 'https://placehold.co/400x250', styles: {desktop: {default: {width: '100%', borderRadius: '0px', alignSelf: 'stretch'}}}},
-                {...createNewElement('box') as Element, children: [
-                    {...createNewElement('heading') as Element, content: '<h3>Preview Title</h3>'},
-                    {...createNewElement('paragraph') as Element, content: '<p>This is a short description for the preview card.</p>'}
-                ], styles: {desktop: {default: {padding: '16px'}}}}
-            ]
-            break;
-        case 'detail-card':
-            baseElement.type = 'card';
-            baseElement.name = "Detail Card";
-            baseElement.styles.desktop.default = { width: '350px', alignSelf: 'center', backgroundColor: '#ffffff', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)', padding: '24px', color: '#111827' };
-            baseElement.children = [
-                {...createNewElement('heading') as Element, content: '<h3>Detail Card</h3>'},
-                {...createNewElement('paragraph') as Element, content: '<p>More information here...</p>'},
-            ];
-            break;
-        case 'profile-card':
-            baseElement.styles.desktop.default = { display: 'flex', alignItems: 'center', gap: '16px', width: '350px', alignSelf: 'center', backgroundColor: '#ffffff', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)', padding: '24px', color: '#111827' };
-            baseElement.content = JSON.stringify({ profileImage: 'https://placehold.co/100x100', name: 'Jane Doe', title: 'UI/UX Designer', handle: '@janedoe' });
-            break;
-        case 'columns':
-            baseElement.styles.desktop.default = { width: '100%', padding: '20px', display: 'flex', gap: '20px' };
-            baseElement.content = JSON.stringify({ columns: [{ id: getUniqueId('column_internal'), children: [] }, { id: getUniqueId('column_internal'), children: [] }] }, null, 2);
-            break;
-        case 'heading': baseElement.content = '<h1>Enter Heading Text...</h1>'; baseElement.styles.desktop.default = { fontSize: '2.25rem', fontWeight: 'bold', color: 'var(--text)', width: '100%', textAlign: 'center' }; break;
-        case 'paragraph': baseElement.content = '<p>Enter your paragraph text here.</p>'; baseElement.styles.desktop.default = { fontSize: '1rem', color: '#4b5563', lineHeight: 1.6, width: '100%', textAlign: 'center' }; break;
+        case 'horizontal-scroll':
+            baseElement.name = 'Horizontal Scroll';
+            baseElement.styles.desktop.default = { width: '100%', maxWidth: '100%', display: 'grid', gridAutoFlow: 'column', padding: '20px 0', position: 'relative' };
+            baseElement.children = [
+                createNewElement('preview-card') as Element,
+                createNewElement('preview-card') as Element,
+            ];
+            break;
+        case 'auto-scroll':
+            baseElement.name = 'Auto Scroll';
+            baseElement.styles.desktop.default = { width: '100%', maxWidth: '100%', position: 'relative', overflow: 'hidden', display: 'grid' };
+            baseElement.content = JSON.stringify({ delay: 3000 });
+            baseElement.children = [
+                createNewElement('preview-card') as Element,
+                createNewElement('preview-card') as Element,
+                createNewElement('preview-card') as Element,
+                createNewElement('preview-card') as Element,
+            ];
+            break;
+        case 'single-auto-scroll':
+            baseElement.name = 'Single Auto Scroll';
+            baseElement.styles.desktop.default = { width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', minHeight: '400px' };
+            baseElement.content = JSON.stringify({ delay: 3000, transition: 'fade' });
+            baseElement.children = [
+                createNewElement('detail-card') as Element,
+                createNewElement('detail-card') as Element,
+                createNewElement('profile-card') as Element,
+            ];
+            break;
+        case 'image-carousel':
+            baseElement.name = 'Image Carousel';
+            baseElement.styles.desktop.default = { width: '100%', height: '500px', position: 'relative', overflow: 'hidden'};
+            baseElement.content = JSON.stringify({ delay: 3000 });
+            baseElement.children = [
+                { ...(createNewElement('image') as Element), styles: { desktop: { default: { width: '100%', height: '100%', objectFit: 'cover' }}}},
+                { ...(createNewElement('image') as Element), content: 'https://placehold.co/1200x500/1e3a8a/ffffff', styles: { desktop: { default: { width: '100%', height: '100%', objectFit: 'cover' }}}},
+            ];
+            break;
+        case 'accordion':
+            baseElement.name = 'Accordion';
+            baseElement.content = JSON.stringify({ title: 'Click to Expand' });
+            baseElement.styles.desktop.default = { width: '100%', border: '1px solid #e5e7eb', borderRadius: '8px', color: '#111827' };
+            break;
+        case 'feature-grid':
+            baseElement.name = "Feature Grid Section";
+            baseElement.styles.desktop.default = { width: '100%', padding: '40px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '32px' };
+            baseElement.content = JSON.stringify({ columnCount: 3 });
+
+            const gridContainer = createNewElement('box') as Element;
+            gridContainer.name = "Features Container";
+            gridContainer.styles.desktop.default = {
+                width: '100%',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '20px'
+            };
+            gridContainer.children = [
+                createNewElement('feature-block') as Element,
+                createNewElement('feature-block') as Element,
+                createNewElement('feature-block') as Element,
+            ];
+
+            baseElement.children = [
+                { ...(createNewElement('heading') as Element), content: '<h2>Our Amazing Features</h2>' },
+                gridContainer
+            ];
+            break;
+        case 'feature-block':
+            baseElement.content = JSON.stringify({ icon: 'Star', title: 'Feature Title', text: 'Describe the feature in a few words.'});
+            baseElement.styles.desktop.default = { display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '12px', padding: '24px', borderRadius: '8px', border: '1px solid #e5e7eb' };
+            break;
+        case 'step-block':
+          baseElement.name = 'Step Block';
+          baseElement.styles.desktop.default = {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+            gap: '12px',
+            padding: '0 16px',
+            flex: '0 1 300px',
+            minWidth: '200px',
+          };
+          baseElement.children = [
+            {
+              ...(createNewElement('paragraph') as Element),
+              content: '<p>01</p>',
+              name: 'Step Number',
+              styles: {
+                ...JSON.parse(JSON.stringify(defaultStyles)),
+                desktop: { default: { display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#eef2ff', color: '#4338ca', fontWeight: 'bold', fontSize: '1.25rem', marginBottom: '16px' } }
+              }
+            },
+            {
+              ...(createNewElement('heading') as Element),
+              content: '<h3>Step Title</h3>',
+              name: 'Step Title',
+              styles: {
+                ...JSON.parse(JSON.stringify(defaultStyles)),
+                desktop: { default: { fontSize: '1.25rem', fontWeight: 'bold', color: '#111827' } }
+              }
+            },
+            {
+              ...(createNewElement('paragraph') as Element),
+              content: '<p>Explain the step here in a few words.</p>',
+              name: 'Step Description',
+              styles: {
+                ...JSON.parse(JSON.stringify(defaultStyles)),
+                desktop: { default: { fontSize: '1rem', color: '#6b7280' } }
+              }
+            }
+          ];
+          break;
+        case 'step-connector':
+            baseElement.name = 'Step Connector';
+            baseElement.styles.desktop.default = {
+                flex: '1',
+                alignSelf: 'flex-start',
+                marginTop: '24px',
+                minWidth: '20px',
+                borderTop: '2px solid #e5e7eb'
+            }
+            break;
+        case 'steps':
+          baseElement.name = 'Steps Section';
+          baseElement.content = JSON.stringify({ connectorType: 'solid' });
+          baseElement.styles.desktop.default = { width: '100%', padding: '40px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '32px' };
+
+          const createStep = (stepNumber: number): Element => {
+            const step = createNewElement('step-block') as Element;
+            if (step.children && step.children[0]) {
+              step.children[0].content = `<p>${String(stepNumber).padStart(2, '0')}</p>`;
+            }
+            return step;
+          }
+
+          const stepsContainer = createNewElement('box') as Element;
+          stepsContainer.name = "Steps Container";
+          stepsContainer.styles.desktop.default = { width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'center' };
+          stepsContainer.children = [
+              createStep(1),
+              createNewElement('step-connector') as Element,
+              createStep(2),
+              createNewElement('step-connector') as Element,
+              createStep(3),
+          ];
+
+          baseElement.children = [
+            { ...(createNewElement('heading') as Element), content: '<h2>Get Started in 3 Easy Steps</h2>' },
+            stepsContainer
+          ];
+          break;
+        case 'testimonial':
+            baseElement.content = JSON.stringify({ avatar: 'https://placehold.co/100x100', quote: 'This is an amazing product!', name: 'Jane Doe', title: 'CEO, Company' });
+            baseElement.styles.desktop.default = { width: '100%', maxWidth: '600px', backgroundColor: '#ffffff', color: '#111827', padding: '24px', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '16px' };
+            break;
+        case 'faq':
+            baseElement.content = JSON.stringify({ items: [{id: getUniqueId('faq-item'), question: 'Is this a question?', answer: 'Yes, and this is the answer.', questionColor: '#111827', answerColor: '#4B5563'}]});
+            baseElement.styles.desktop.default = { width: '100%', maxWidth: '700px' };
+            break;
+        case 'preview-card':
+            baseElement.type = 'card';
+            baseElement.name = "Preview Card";
+            baseElement.styles.desktop.default = { width: '350px', flexShrink: 0, alignSelf: 'center', backgroundColor: '#ffffff', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)', overflow: 'hidden', color: '#111827', padding: '0px', alignItems: 'flex-start' };
+            baseElement.children = [
+                {...createNewElement('image') as Element, content: 'https://placehold.co/400x250', styles: {desktop: {default: {width: '100%', borderRadius: '0px', alignSelf: 'stretch'}}}},
+                {...createNewElement('box') as Element, children: [
+                    {...createNewElement('heading') as Element, content: '<h3>Preview Title</h3>'},
+                    {...createNewElement('paragraph') as Element, content: '<p>This is a short description for the preview card.</p>'}
+                ], styles: {desktop: {default: {padding: '16px'}}}}
+            ]
+            break;
+        case 'detail-card':
+            baseElement.type = 'card';
+            baseElement.name = "Detail Card";
+            baseElement.styles.desktop.default = { width: '350px', alignSelf: 'center', backgroundColor: '#ffffff', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)', padding: '24px', color: '#111827' };
+            baseElement.children = [
+                {...createNewElement('heading') as Element, content: '<h3>Detail Card</h3>'},
+                {...createNewElement('paragraph') as Element, content: '<p>More information here...</p>'},
+            ];
+            break;
+        case 'profile-card':
+            baseElement.styles.desktop.default = { display: 'flex', alignItems: 'center', gap: '16px', width: '350px', alignSelf: 'center', backgroundColor: '#ffffff', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)', padding: '24px', color: '#111827' };
+            baseElement.content = JSON.stringify({ profileImage: 'https://placehold.co/100x100', name: 'Jane Doe', title: 'UI/UX Designer', handle: '@janedoe' });
+            break;
+        case 'columns':
+            baseElement.styles.desktop.default = { width: '100%', padding: '20px', display: 'flex', gap: '20px' };
+            baseElement.content = JSON.stringify({ columns: [{ id: getUniqueId('column_internal'), children: [] }, { id: getUniqueId('column_internal'), children: [] }] }, null, 2);
+            break;
+        case 'heading': baseElement.content = '<h1>Enter Heading Text...</h1>'; baseElement.styles.desktop.default = { fontSize: '2.25rem', fontWeight: 'bold', color: 'var(--text)', width: '100%', textAlign: 'center' }; break;
+        case 'paragraph': baseElement.content = '<p>Enter your paragraph text here.</p>'; baseElement.styles.desktop.default = { fontSize: '1rem', color: '#4b5563', lineHeight: 1.6, width: '100%', textAlign: 'center' }; break;
+        case 'gallery':
+            baseElement.content = JSON.stringify({ columns: 3, images: ['https://placehold.co/600x400/4f46e5/ffffff', 'https://placehold.co/600x400/1e3a8a/ffffff', 'https://placehold.co/600x400/3730a3/ffffff'] }, null, 2);
+            baseElement.styles.desktop.default = { width: '100%', padding: '20px', display: 'grid', gap: '16px' };
+            break;
+        case 'footer':
+            baseElement.content = JSON.stringify({ text: `© ${new Date().getFullYear()} Your Company. All rights reserved.` }, null, 2);
+            baseElement.styles.desktop.default = { width: '100%', padding: '40px 20px', backgroundColor: '#111827', color: '#9ca3af', textAlign: 'center' };
+            break;
+        case 'navbar':
+            baseElement.content = JSON.stringify({ logo: { type: 'image', src: "https://placehold.co/100x40/FFFFFF/1a202c?text=Logo", text: "My Site", alt: "Logo" }, links: [{ id: getUniqueId('link'), label: "Home", href: "#" }], cta: { label: "Sign Up", href: "#", enabled: true }}, null, 2);
+            baseElement.styles.desktop.default = { width: '100%', backgroundColor: "#fff", color: "#111827", padding: "1rem 2rem", boxShadow: '0 2px 4px rgba(0,0,0,0.05)' };
+            break;
+        case 'image':
+            baseElement.content = 'https://placehold.co/600x400';
+            baseElement.styles.desktop.default = { width: 'auto', maxWidth: '100%', height: 'auto', borderRadius: '8px', alignSelf: 'center' };
+            break;
+        case 'video':
+            baseElement.content = 'https://www.youtube.com/embed/dQw4w9WgXcQ';
+            baseElement.styles.desktop.default = { width: '100%', aspectRatio: '16 / 9' };
+            break;
+        case 'divider':
+            baseElement.styles.desktop.default = { width: '100%', height: '1px', backgroundColor: '#e5e7eb', margin: '16px 0' };
+            break;
+        case 'contact-form':
+            baseElement.content = JSON.stringify({ fields: [{label: 'Name', type: 'text'}, {label: 'Email', type: 'email'}], buttonText: 'Submit' });
+            baseElement.styles.desktop.default = { width: '100%', maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '16px', color: '#111827' };
+            break;
+        case 'button':
+            baseElement.content = 'Click Me';
+            baseElement.styles.desktop.default = { backgroundColor: 'var(--primary)', color: '#fff', padding: '10px 20px', borderRadius: '8px', border: 'none', cursor: 'pointer', alignSelf: 'center' };
+            baseElement.styles.desktop.hover = { backgroundColor: '#4338ca' };
+            break;
         case 'hero':
-            baseElement.name = 'Hero Section';
-            baseElement.styles.desktop.default = { width: '100%', height: '500px', position: 'relative', display: 'flex', color: '#ffffff'};
-            baseElement.content = JSON.stringify({
-                backgroundType: 'image',
-                backgroundImageUrl: 'https://placehold.co/1200x500/4f46e5/ffffff',
-                backgroundVideoUrl: '',
-                contentPosition: 'center-middle'
-            });
-            baseElement.children = [
-                {...(createNewElement('heading') as Element), content: '<h1>Your Big Idea</h1>', styles: {desktop:{default:{color: '#ffffff', fontSize: '3rem'}}}},
-                {...(createNewElement('paragraph') as Element), content: '<p>Explain it in a few words.</p>', styles: {desktop:{default:{color: '#eeeeee', maxWidth: '600px', fontSize: '1.25rem'}}}},
-                {...(createNewElement('button') as Element), content: 'Get Started', styles: {desktop:{default:{backgroundColor: '#ffffff', color: 'var(--primary)', alignSelf: 'center'}}}},
-            ];
-            break;
-        case 'gallery':
-            baseElement.content = JSON.stringify({ columns: 3, images: ['https://placehold.co/600x400/4f46e5/ffffff', 'https://placehold.co/600x400/1e3a8a/ffffff', 'https://placehold.co/600x400/3730a3/ffffff'] }, null, 2);
-            baseElement.styles.desktop.default = { width: '100%', padding: '20px', display: 'grid', gap: '16px' };
-            break;
-        case 'footer':
-            baseElement.content = JSON.stringify({ text: `© ${new Date().getFullYear()} Your Company. All rights reserved.` }, null, 2);
-            baseElement.styles.desktop.default = { width: '100%', padding: '40px 20px', backgroundColor: '#111827', color: '#9ca3af', textAlign: 'center' };
-            break;
-        case 'navbar':
-            baseElement.content = JSON.stringify({ logo: { type: 'image', src: "https://placehold.co/100x40/FFFFFF/1a202c?text=Logo", text: "My Site", alt: "Logo" }, links: [{ id: getUniqueId('link'), label: "Home", href: "#" }], cta: { label: "Sign Up", href: "#", enabled: true }}, null, 2);
-            baseElement.styles.desktop.default = { width: '100%', backgroundColor: "#fff", color: "#111827", padding: "1rem 2rem", boxShadow: '0 2px 4px rgba(0,0,0,0.05)' };
-            break;
-        case 'image':
-            baseElement.content = 'https://placehold.co/600x400';
-            baseElement.styles.desktop.default = { width: 'auto', maxWidth: '100%', height: 'auto', borderRadius: '8px', alignSelf: 'center' };
-            break;
-        case 'video':
-            baseElement.content = 'https://www.youtube.com/embed/dQw4w9WgXcQ';
-            baseElement.styles.desktop.default = { width: '100%', aspectRatio: '16 / 9' };
-            break;
-        case 'divider':
-            baseElement.styles.desktop.default = { width: '100%', height: '1px', backgroundColor: '#e5e7eb', margin: '16px 0' };
-            break;
-        case 'contact-form':
-            baseElement.content = JSON.stringify({ fields: [{label: 'Name', type: 'text'}, {label: 'Email', type: 'email'}], buttonText: 'Submit' });
-            baseElement.styles.desktop.default = { width: '100%', maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '16px', color: '#111827' };
-            break;
-        case 'button':
-            baseElement.content = 'Click Me';
-            baseElement.styles.desktop.default = { backgroundColor: 'var(--primary)', color: '#fff', padding: '10px 20px', borderRadius: '8px', border: 'none', cursor: 'pointer', alignSelf: 'center' };
-            baseElement.styles.desktop.hover = { backgroundColor: '#4338ca' };
-            break;
-        case 'ordered-list': baseElement.content = `<ol><li>List Item 1</li><li>List Item 2</li></ol>`; baseElement.styles.desktop.default = { paddingLeft: '40px', color: '#4b5563', width: '100%' }; break;
-        case 'unordered-list': baseElement.content = `<ul><li>List Item 1</li><li>List Item 2</li></ul>`; baseElement.styles.desktop.default = { paddingLeft: '40px', color: '#4b5563', width: '100%' }; break;
-    }
-    return { ...baseElement, id };
+            baseElement.name = 'Hero Section';
+            baseElement.styles.desktop.default = { width: '100%', height: '500px', position: 'relative', display: 'flex', color: '#ffffff'};
+            baseElement.content = JSON.stringify({
+                backgroundType: 'image',
+                backgroundImageUrl: 'https://placehold.co/1200x500/4f46e5/ffffff',
+                backgroundVideoUrl: '',
+                contentPosition: 'center-middle'
+            });
+            baseElement.children = [
+                {...(createNewElement('heading') as Element), content: '<h1>Your Big Idea</h1>', styles: {desktop:{default:{color: '#ffffff', fontSize: '3rem'}}}},
+                {...(createNewElement('paragraph') as Element), content: '<p>Explain it in a few words.</p>', styles: {desktop:{default:{color: '#eeeeee', maxWidth: '600px', fontSize: '1.25rem'}}}},
+                {...(createNewElement('button') as Element), content: 'Get Started', styles: {desktop:{default:{backgroundColor: '#ffffff', color: 'var(--primary)', alignSelf: 'center'}}}},
+            ];
+            break;
+        case 'hero-slider':
+            baseElement.name = 'Hero Slider';
+            baseElement.styles.desktop.default = { width: '100%', height: '500px', position: 'relative', overflow: 'hidden', color: '#ffffff'};
+            baseElement.content = JSON.stringify({ delay: 4000 });
+            baseElement.children = [
+                createNewElement('hero') as Element,
+                createNewElement('hero') as Element,
+            ];
+            break;
+        case 'ordered-list': baseElement.content = `<ol><li>List Item 1</li><li>List Item 2</li></ol>`; baseElement.styles.desktop.default = { paddingLeft: '40px', color: '#4b5563', width: '100%' }; break;
+        case 'unordered-list': baseElement.content = `<ul><li>List Item 1</li><li>List Item 2</li></ul>`; baseElement.styles.desktop.default = { paddingLeft: '40px', color: '#4b5563', width: '100%' }; break;
+    }
+    return { ...baseElement, id };
 };
 
 const EditorContext = createContext<{ state: EditorState; dispatch: React.Dispatch<EditorAction> } | null>(null);
@@ -1132,6 +1190,9 @@ const RenderElement = React.memo(({ element, screenSize, handleDragOver, handleD
         switch (element.type) {
             case 'section':
             case 'box':
+                if (element.name === 'Hero Slide') {
+                    return <HeroSlideComponent element={element} props={props} dropProps={dropProps} renderChildren={renderChildren} />;
+                }
             case 'card':
             case 'preview-card':
             case 'detail-card':
@@ -1139,15 +1200,16 @@ const RenderElement = React.memo(({ element, screenSize, handleDragOver, handleD
                 return <section {...props} {...dropProps}>{renderChildren(element.children || [], element.id)}</section>;
 
             case 'hero': return <HeroComponent element={element} props={props} dropProps={dropProps} renderChildren={renderChildren} />;
-            case 'steps': return <StepsComponent element={element} props={props} dropProps={dropProps} renderChildren={renderChildren} />;
             case 'horizontal-scroll': return <HorizontalScrollComponent element={element} props={props} dropProps={dropProps} renderChildren={renderChildren} />;
             case 'auto-scroll': return <AutoScrollComponent element={element} props={props} dropProps={dropProps} screenSize={screenSize} handleDragOver={handleDragOver} handleDrop={handleDrop} dropIndicator={dropIndicator} selectedElementId={state.selectedElementId}/>;
             case 'single-auto-scroll': return <SingleAutoScrollComponent element={element} props={props} dropProps={dropProps} selectedElementId={state.selectedElementId} />;
             case 'image-carousel': return <ImageCarouselComponent element={element} props={props} dropProps={dropProps} />;
-            case 'hero-slider': return <HeroSliderComponent element={element} props={props} dropProps={dropProps} />;
+            case 'hero-slider': return <HeroSliderComponent element={element} props={props} dropProps={dropProps} selectedElementId={state.selectedElementId} />;
             case 'accordion': return <AccordionComponent element={element} props={props} dropProps={dropProps} renderChildren={renderChildren} />;
             case 'feature-block': return <FeatureBlockComponent element={element} props={props}/>;
-            case 'step-block': return <StepBlockComponent element={element} props={props}/>;
+           case 'steps': return <StepsComponent element={element} props={props} dropProps={dropProps} renderChildren={renderChildren} />;
+            case 'step-block': return <StepBlockComponent element={element} props={props} dropProps={dropProps} renderChildren={renderChildren} />;
+            case 'step-connector': return <div {...props} />;
             case 'testimonial': return <TestimonialComponent element={element} props={props}/>;
             case 'faq': return <FaqComponent element={element} props={props} />;
 
@@ -1191,18 +1253,18 @@ const RenderElement = React.memo(({ element, screenSize, handleDragOver, handleD
                 );
             }
             case 'right-image-section': {
-                const content = JSON.parse(element.content || '{}');
-                return (
-                    <section {...props} >
-                        <div className="flex-1 min-h-[100px]" {...dropProps}>
-                            {renderChildren(element.children || [], element.id)}
-                        </div>
-                        <div className="flex-1 flex min-h-[250px]">
-                            <img src={content.imageSrc} alt="" className="w-full h-full object-cover rounded-lg" />
-                        </div>
-                    </section>
-                )
-            }
+                const content = JSON.parse(element.content || '{}');
+                return (
+                    <section {...props} >
+                        <div className="flex-1 min-h-[100px]" {...dropProps}>
+                            {renderChildren(element.children || [], element.id)}
+                        </div>
+                        <div className="flex-1 flex min-h-[250px]">
+                            <img src={content.imageSrc} alt="" className="w-full h-full object-cover rounded-lg" />
+                        </div>
+                    </section>
+                )
+            }
             case 'left-image-section': {
                 const content = JSON.parse(element.content || '{}');
                 return (
@@ -1379,6 +1441,40 @@ const StyleInput = ({ label, value, onChange, type = 'text', options = [], ...pr
 );
 StyleInput.displayName = 'StyleInput';
 
+const AIContentGenerator = ({ onGenerate, promptPlaceholder }: { onGenerate: (prompt: string) => Promise<void>, promptPlaceholder: string }) => {
+    const [aiPrompt, setAiPrompt] = useState('');
+    const [isGenerating, setIsGenerating] = useState(false);
+
+    const handleGenerate = async () => {
+        if (!aiPrompt) return;
+        setIsGenerating(true);
+        await onGenerate(aiPrompt);
+        setIsGenerating(false);
+        setAiPrompt('');
+    };
+
+    return (
+        <div className="p-2 border border-dashed border-gray-600 rounded-md mt-4">
+            <h5 className="text-xs font-bold text-indigo-400 mb-2">Generate with AI</h5>
+            <textarea
+                value={aiPrompt}
+                onChange={e => setAiPrompt(e.target.value)}
+                placeholder={promptPlaceholder}
+                className="w-full bg-gray-700 rounded-md p-2 text-sm h-20 mb-2"
+            />
+            <button
+                onClick={handleGenerate}
+                disabled={isGenerating || !aiPrompt}
+                className="w-full flex items-center justify-center gap-2 bg-indigo-600 py-2 rounded-md hover:bg-indigo-500 disabled:bg-gray-600 disabled:cursor-not-allowed text-sm"
+            >
+                {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
+                {isGenerating ? 'Generating...' : 'Generate'}
+            </button>
+        </div>
+    );
+};
+AIContentGenerator.displayName = 'AIContentGenerator';
+
 const AddChildElementProperties = ({ element }: { element: Element }) => {
     const { dispatch } = useEditorContext();
 
@@ -1386,20 +1482,10 @@ const AddChildElementProperties = ({ element }: { element: Element }) => {
         let newCardType: ElementType = 'preview-card';
         if (element.type === 'single-auto-scroll') newCardType = 'detail-card';
         if (element.type === 'image-carousel') newCardType = 'image';
-        if (element.type === 'hero-slider') newCardType = 'box';
+        if (element.type === 'hero-slider') newCardType = 'hero';
         
         const newElement = createNewElement(newCardType) as Element;
 
-        if (element.type === 'hero-slider') {
-            newElement.name = 'Hero Slide';
-            newElement.styles = {
-                ...newElement.styles,
-                desktop: { default: { backgroundImage: 'url(https://placehold.co/1200x500/3730a3/ffffff)', backgroundSize: 'cover', backgroundPosition: 'center', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px' }}
-            };
-            newElement.children = [
-                createNewElement('heading') as Element
-            ]
-        }
         if (element.type === 'image-carousel') {
              newElement.styles = { desktop: { default: { width: '100%', height: '100%', objectFit: 'cover' }}};
         }
@@ -1539,6 +1625,12 @@ const HeroProperties = ({ element, content, onContentChange }: { element: Elemen
 };
 HeroProperties.displayName = 'HeroProperties';
 
+// Add this list before the FeatureBlockProperties component
+const lucideIconOptions = [
+  'Award', 'CheckCircle', 'Shield', 'Zap', 'Rocket', 'Database', 'Cloud', 'Lock', 'Settings', 'Code',
+  'Star', 'Heart', 'Users', 'Globe', 'Mail', 'MessageSquare', 'Calendar', 'Clock', 'Server', 'Layers',
+  'TrendingUp', 'CreditCard', 'FileText', 'Image', 'Video', 'Monitor', 'Phone', 'MapPin', 'ThumbsUp', 'Package'
+].sort().map(name => ({ label: name, value: name }));
 
 const ElementPropertiesPanel = ({ element, screenSize, setScreenSize }: { element: Element; screenSize: 'desktop' | 'tablet' | 'mobile', setScreenSize: (size: 'desktop' | 'tablet' | 'mobile') => void }) => {
   const { dispatch } = useEditorContext();
@@ -1567,7 +1659,7 @@ const ElementPropertiesPanel = ({ element, screenSize, setScreenSize }: { elemen
   const currentStyles = element.styles?.[screenSize]?.[styleState] || {};
 
   const renderContentInputs = () => {
-    if (['preview-card', 'detail-card', 'feature-grid'].includes(element.type)) {
+    if (['preview-card', 'detail-card'].includes(element.type)) {
       return <p className="text-xs text-gray-400">This is a preset container. Click the elements inside the canvas to edit them.</p>;
     }
     
@@ -1575,13 +1667,28 @@ const ElementPropertiesPanel = ({ element, screenSize, setScreenSize }: { elemen
       return <StyleInput label="URL / Text" value={element.content} onChange={val => dispatch({type: 'UPDATE_ELEMENT_CONTENT', payload: {elementId: element.id, content: val}})}/>;
     }
     
+    
     if (['horizontal-scroll', 'image-carousel', 'hero-slider'].includes(element.type)) {
-        return <AddChildElementProperties element={element} />;
-    }
+        const content = JSON.parse(element.content || '{}');
+        return (
+          <>
+            <AddChildElementProperties element={element} />
+            { (element.type === 'image-carousel' || element.type === 'hero-slider') &&
+                <div>
+                  <SliderDelayProperties content={content} onContentChange={handleContentChange} />
+                </div>
+            }
+          </>
+        );
+    }
 
     if (element.content) {
         try {
             const content = JSON.parse(element.content);
+
+            if (element.name === 'Hero Slide') {
+                return <HeroSlideProperties element={element} content={content} onContentChange={handleContentChange} />;
+            }
 
             if (element.type === 'auto-scroll') {
                 return <>
@@ -1604,17 +1711,18 @@ const ElementPropertiesPanel = ({ element, screenSize, setScreenSize }: { elemen
                   navbar: <NavbarProperties content={content} onContentChange={handleContentChange} />,
                   columns: <ColumnsProperties element={element} content={content} onContentChange={handleContentChange} />,
                   gallery: <GalleryProperties content={content} onContentChange={handleContentChange} />,
-                  steps: <StepsProperties element={element} content={content} onContentChange={handleContentChange} />,
+                  steps: <StepsProperties element={element} />,
                   footer: <StyleInput label="Copyright Text" value={content.text} onChange={val => handleContentChange({text: val})} />,
-                  "right-image-section": <StyleInput label="Image URL" value={content.imageSrc} onChange={val => handleContentChange({ ...content, imageSrc: val })} />,
-                  "left-image-section": <StyleInput label="Image URL" value={content.imageSrc} onChange={val => handleContentChange({ ...content, imageSrc: val })} />,
-                  "video-right-section": <StyleInput label="Video URL" value={content.videoUrl} onChange={val => handleContentChange({ ...content, videoUrl: val })} />,
-                  "video-left-section": <StyleInput label="Video URL" value={content.videoUrl} onChange={val => handleContentChange({ ...content, videoUrl: val })} />,
+                  "right-image-section": <SplitSectionProperties element={element} content={content} onContentChange={handleContentChange} />,
+                  "left-image-section": <SplitSectionProperties element={element} content={content} onContentChange={handleContentChange} />,
+                  "video-right-section": <SplitSectionProperties element={element} content={content} onContentChange={handleContentChange} />,
+                  "video-left-section": <SplitSectionProperties element={element} content={content} onContentChange={handleContentChange} />,
                   "profile-card": <ProfileCardProperties content={content} onContentChange={handleContentChange} />,
                   "testimonial": <TestimonialProperties content={content} onContentChange={handleContentChange} />,
                   "faq": <FaqProperties content={content} onContentChange={handleContentChange} />,
+                  "feature-grid": <FeatureGridProperties element={element} content={content} onContentChange={handleContentChange} />,
                   "feature-block": <FeatureBlockProperties content={content} onContentChange={handleContentChange} />,
-                  "step-block": <StepBlockProperties content={content} onContentChange={handleContentChange} />,
+                  "step-block": <StepBlockProperties element={element} />,
                   "contact-form": <ContactFormProperties content={content} onContentChange={handleContentChange} />,
                 };
                 return contentPanelMap[element.type] || null;
@@ -1937,28 +2045,95 @@ const FeatureBlockComponent = ({ element, props }: { element: Element; props: an
 };
 FeatureBlockComponent.displayName = 'FeatureBlockComponent';
 
-const StepBlockComponent = ({ element, props }: { element: Element; props: any }) => {
-    const content = JSON.parse(element.content);
+const StepBlockComponent = ({ element, props, dropProps, renderChildren }: { element: Element; props: any, dropProps: any, renderChildren: any }) => {
     return (
-        <div {...props}>
-            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 font-bold text-xl mb-4">
-                {content.step}
-            </div>
-            <h3 className="text-xl font-bold mb-2">{content.title}</h3>
-            <p className="text-gray-500">{content.text}</p>
+        <div {...props} {...dropProps}>
+            {renderChildren(element.children || [], element.id)}
         </div>
     );
 };
 StepBlockComponent.displayName = 'StepBlockComponent';
 
 const StepsComponent = ({ element, props, dropProps, renderChildren }: { element: Element; props: any, dropProps: any, renderChildren: any }) => {
-    return (
-      <section {...props} {...dropProps}>
-        {renderChildren(element.children || [], element.id)}
-      </section>
-    );
+    return (
+      <section {...props} {...dropProps}>
+        {renderChildren(element.children || [], element.id)}
+      </section>
+    );
 };
 StepsComponent.displayName = 'StepsComponent';
+
+const StepsProperties = ({ element }: { element: Element; }) => {
+    const { dispatch } = useEditorContext();
+    const content = JSON.parse(element.content || '{}');
+    const stepsContainer = element.children?.find(child => child.name === "Steps Container");
+
+    if (!stepsContainer) return <p className="text-xs text-red-400">Error: Steps container not found.</p>;
+
+    const handleAddStep = () => {
+        const stepBlocks = stepsContainer.children?.filter(c => c.type === 'step-block') || [];
+        const newStepNumber = stepBlocks.length + 1;
+        const newStep = createNewElement('step-block') as Element;
+        if (newStep.children?.[0]) {
+            newStep.children[0].content = `<p>${String(newStepNumber).padStart(2, '0')}</p>`;
+        }
+
+        const elementsToAdd = [
+            createNewElement('step-connector') as Element,
+            newStep
+        ];
+
+        dispatch({
+            type: 'ADD_ELEMENT',
+            payload: {
+                elements: elementsToAdd,
+                parentId: stepsContainer.id,
+                index: stepsContainer.children?.length || 0
+            }
+        });
+    };
+    
+    const handleConnectorChange = (type: string) => {
+        dispatch({
+            type: 'UPDATE_ELEMENT_CONTENT',
+            payload: { elementId: element.id, content: JSON.stringify({ connectorType: type }, null, 2) }
+        });
+
+        const borderStyle = {
+            solid: '2px solid #e5e7eb',
+            dashed: '2px dashed #e5e7eb',
+            dotted: '2px dotted #e5e7eb',
+        }[type] || 'none';
+
+        stepsContainer.children?.forEach(child => {
+            if (child.type === 'step-connector') {
+                dispatch({
+                    type: 'UPDATE_ELEMENT_STYLES',
+                    payload: { elementId: child.id, styles: { borderTop: borderStyle }, breakpoint: 'desktop', state: 'default' }
+                });
+            }
+        });
+    };
+
+    return (
+        <>
+            <StyleInput
+                label="Connector Style"
+                type="select"
+                value={content.connectorType || 'solid'}
+                onChange={handleConnectorChange}
+                options={[{ label: 'Solid Line', value: 'solid' }, { label: 'Dashed Line', value: 'dashed' }, { label: 'Dotted Line', value: 'dotted' }, { label: 'None', value: 'none' }]}
+            />
+            <div className="my-4 border-t border-gray-700"></div>
+            <button onClick={handleAddStep} className="w-full flex items-center justify-center gap-2 bg-indigo-600 py-2 rounded-md hover:bg-indigo-500 text-sm">
+                <FaPlus size={12} /> Add New Step
+            </button>
+            <p className="text-xs text-gray-400 mt-2">To edit, reorder, or delete an individual step, select it on the canvas.</p>
+        </>
+    );
+};
+StepsProperties.displayName = 'StepsProperties';
+
 
 const HorizontalScrollComponent = ({ element, props, dropProps, renderChildren }: { element: Element; props: any, dropProps: any, renderChildren: any }) => {
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -2129,21 +2304,35 @@ const SingleAutoScrollComponent = ({ element, props, dropProps, selectedElementI
 SingleAutoScrollComponent.displayName = 'SingleAutoScrollComponent';
 
 const ImageCarouselComponent = ({ element, props, dropProps }: { element: Element; props: any, dropProps: any }) => {
+    const { state } = useEditorContext();
     const content = JSON.parse(element.content || '{}');
     const delay = content.delay || 3000;
     const [currentIndex, setCurrentIndex] = useState(0);
     const totalChildren = element.children?.length || 0;
+    const [isHovering, setIsHovering] = useState(false);
+
+    const childIds = useMemo(() => {
+        const getAllIds = (els: Element[]): string[] => {
+            return els.flatMap(el => [el.id, ...(el.children ? getAllIds(el.children) : [])]);
+        };
+        return getAllIds(element.children || []);
+    }, [element.children]);
+
+    const isChildSelected = state.selectedElementId ? childIds.includes(state.selectedElementId) : false;
+    const isPaused = isHovering || isChildSelected || state.selectedElementId === element.id;
 
     useEffect(() => {
-        if (totalChildren <= 1) return;
+        if (isPaused || totalChildren <= 1) return;
+
         const interval = setInterval(() => {
             setCurrentIndex(prevIndex => (prevIndex + 1) % totalChildren);
         }, delay);
+
         return () => clearInterval(interval);
-    }, [totalChildren, delay]);
+    }, [totalChildren, delay, isPaused]);
 
     return (
-        <div {...props} {...dropProps}>
+        <div {...props} {...dropProps} onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
             {element.children.map((child, index) => (
                 <div key={child.id} className={`absolute w-full h-full transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}>
                     <RenderElement element={child} {...{screenSize: 'desktop', handleDragOver: ()=>{}, handleDrop: ()=>{}, dropIndicator: null}} />
@@ -2152,8 +2341,8 @@ const ImageCarouselComponent = ({ element, props, dropProps }: { element: Elemen
             {element.children.length === 0 && <div className="min-h-[60px] flex items-center justify-center text-xs text-gray-400 border-2 border-dashed border-gray-300 rounded-md">Drag images here</div>}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
                 {element.children.map((_, index) => (
-                    <button 
-                        key={index} 
+                    <button
+                        key={index}
                         onClick={() => setCurrentIndex(index)}
                         className={`w-2 h-2 rounded-full transition-colors ${currentIndex === index ? 'bg-white' : 'bg-white/50'}`}
                     ></button>
@@ -2162,43 +2351,63 @@ const ImageCarouselComponent = ({ element, props, dropProps }: { element: Elemen
         </div>
     );
 };
-ImageCarouselComponent.displayName = 'ImageCarouselComponent';
 
-const HeroSliderComponent = ({ element, props, dropProps }: { element: Element; props: any, dropProps: any }) => {
-    const content = JSON.parse(element.content || '{}');
-    const delay = content.delay || 4000;
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const totalChildren = element.children?.length || 0;
+const HeroSliderComponent = ({ element, props, dropProps, selectedElementId }: { element: Element; props: any, dropProps: any, selectedElementId: string | null; }) => {
+    const { state } = useEditorContext();
+    const content = JSON.parse(element.content || '{}');
+    const delay = content.delay || 4000;
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const totalChildren = element.children?.length || 0;
+    const [isHovering, setIsHovering] = useState(false);
 
-    useEffect(() => {
-        if (totalChildren <= 1) return;
-        const interval = setInterval(() => {
-            setCurrentIndex(prevIndex => (prevIndex + 1) % totalChildren);
-        }, delay);
-        return () => clearInterval(interval);
-    }, [totalChildren, delay]);
+    const childIds = useMemo(() => {
+        const getAllIds = (els: Element[]): string[] => {
+            return els.flatMap(el => [el.id, ...(el.children ? getAllIds(el.children) : [])]);
+        };
+        return getAllIds(element.children || []);
+    }, [element.children]);
 
-    return (
-        <div {...props} {...dropProps}>
-            {element.children.map((child, index) => (
-                <div key={child.id} className={`absolute w-full h-full transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}>
-                    <RenderElement element={child} {...{screenSize: 'desktop', handleDragOver: ()=>{}, handleDrop: ()=>{}, dropIndicator: null}} />
-                </div>
-            ))}
-             {element.children.length === 0 && <div className="min-h-[60px] flex items-center justify-center text-xs text-gray-400 border-2 border-dashed border-gray-300 rounded-md">Drag slides here</div>}
-             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                {element.children.map((_, index) => (
-                    <button 
-                        key={index} 
-                        onClick={() => setCurrentIndex(index)}
-                        className={`w-2 h-2 rounded-full transition-colors ${currentIndex === index ? 'bg-white' : 'bg-white/50'}`}
-                    ></button>
-                ))}
-            </div>
-        </div>
-    );
+    const isChildSelected = selectedElementId ? childIds.includes(selectedElementId) : false;
+    const isPaused = isHovering || isChildSelected || state.selectedElementId === element.id;
+
+    useEffect(() => {
+        if (isPaused || totalChildren <= 1) return;
+        const interval = setInterval(() => {
+            setCurrentIndex(prevIndex => (prevIndex + 1) % totalChildren);
+        }, delay);
+        return () => clearInterval(interval);
+    }, [totalChildren, delay, isPaused]);
+
+    return (
+        <div {...props} {...dropProps} onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
+            {element.children.map((child, index) => (
+                <div key={child.id} className={`absolute w-full h-full transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}>
+                    <RenderElement element={child} {...{screenSize: 'desktop', handleDragOver: ()=>{}, handleDrop: ()=>{}, dropIndicator: null}} />
+                </div>
+            ))}
+             {element.children.length === 0 && <div className="min-h-[60px] flex items-center justify-center text-xs text-gray-400 border-2 border-dashed border-gray-300 rounded-md">Drag slides here</div>}
+             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                {element.children.map((_, index) => (
+                    <button 
+                        key={index} 
+                        onClick={() => setCurrentIndex(index)}
+                        className={`w-2 h-2 rounded-full transition-colors ${currentIndex === index ? 'bg-white' : 'bg-white/50'}`}
+                    ></button>
+                ))}
+            </div>
+        </div>
+    );
 };
-HeroSliderComponent.displayName = 'HeroSliderComponent';
+
+const SliderDelayProperties = ({ content, onContentChange }: { content: any, onContentChange: (c: any) => void }) => (
+    <StyleInput
+        label="Slide Delay (ms)"
+        type="number"
+        value={content.delay}
+        onChange={val => onContentChange({ ...content, delay: Number(val) })}
+    />
+);
+SliderDelayProperties.displayName = 'SliderDelayProperties';
 
 const AccordionComponent = ({ element, props, dropProps, renderChildren }: { element: Element; props: any, dropProps: any, renderChildren: any }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -2220,30 +2429,93 @@ const AccordionComponent = ({ element, props, dropProps, renderChildren }: { ele
 };
 AccordionComponent.displayName = 'AccordionComponent';
 
-const HeroComponent = ({ element, props, dropProps, renderChildren }: { element: Element; props: any, dropProps: any, renderChildren: any }) => {
-    const content = JSON.parse(element.content || '{}');
-    const positionClasses = {
-        'center-middle': 'justify-center items-center text-center',
-        'center-top': 'justify-center items-start text-center',
-        'bottom-left': 'justify-end items-start text-left',
-        'bottom-right': 'justify-end items-end text-right',
-    }[content.contentPosition || 'center-middle'];
+const HeroComponent = ({
+  element,
+  props,
+  dropProps,
+  renderChildren,
+}: {
+  element: Element
+  props: any
+  dropProps: any
+  renderChildren: any
+}) => {
+  const content = JSON.parse(element.content || '{}')
 
-    return (
-        <section {...props} className={`${props.className || ''} relative`}>
-            {content.backgroundType === 'image' && (
-                <img src={content.backgroundImageUrl} alt="" className="absolute top-0 left-0 w-full h-full object-cover -z-10" />
-            )}
-            {content.backgroundType === 'video' && (
-                <video src={content.backgroundVideoUrl} autoPlay loop muted playsInline className="absolute top-0 left-0 w-full h-full object-cover -z-10" />
-            )}
-            <div className={`relative z-10 w-full h-full flex flex-col p-8 ${positionClasses}`} {...dropProps}>
-                {renderChildren(element.children || [], element.id)}
-            </div>
-        </section>
-    );
-};
+  const positionClasses = {
+    'center-middle': 'justify-center items-center text-center',
+    'center-top': 'justify-center items-start text-center',
+    'bottom-left': 'justify-end items-start text-left',
+    'bottom-right': 'justify-end items-end text-right',
+  }[content.contentPosition || 'center-middle']
+
+  // Extracts the 11-character YouTube ID from watch/share/embed links
+  const getYouTubeVideoId = (url: string) => {
+    if (!url) return null
+    const regExp =
+      /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    const match = url.match(regExp)
+    return match ? match[1] : null
+  }
+
+  const isYouTube = (url: string) =>
+    /youtube\.com|youtu\.be/.test(url ?? '')
+
+  const videoId = isYouTube(content.backgroundVideoUrl)
+    ? getYouTubeVideoId(content.backgroundVideoUrl)
+    : null
+
+  const youTubeSrc = videoId
+    ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0`
+    : ''
+
+  return (
+    <section
+      {...props}
+      className={`${props.className || ''} relative overflow-hidden h-screen`}
+    >
+      {content.backgroundType === 'image' && content.backgroundImageUrl && (
+        <img
+          src={content.backgroundImageUrl}
+          alt="background"
+          className="absolute top-0 left-0 w-full h-full object-cover z-0"
+        />
+      )}
+
+      {content.backgroundType === 'video' && content.backgroundVideoUrl && (
+        isYouTube(content.backgroundVideoUrl) && youTubeSrc ? (
+          <iframe
+            src={youTubeSrc}
+            frameBorder="0"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+            title="Background Video"
+            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 z-0"
+          ></iframe>
+        ) : (
+          <video
+            src={content.backgroundVideoUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 object-cover z-0"
+          />
+        )
+      )}
+
+      <div
+        className={`relative z-10 w-full h-full flex flex-col p-8 ${positionClasses}`}
+        {...dropProps}
+      >
+        {renderChildren(element.children || [], element.id)}
+      </div>
+    </section>
+  )
+}
+
 HeroComponent.displayName = 'HeroComponent';
+
 
 // Add these new components to your file
 
@@ -2299,22 +2571,148 @@ const TestimonialProperties = ({ content, onContentChange }: { content: any; onC
 );
 TestimonialProperties.displayName = 'TestimonialProperties';
 
-const FeatureBlockProperties = ({ content, onContentChange }: { content: any; onContentChange: (c: any) => void }) => (
-    <>
-        <StyleInput label="Icon Name (from Lucide)" value={content.icon} onChange={val => onContentChange({...content, icon: val})} />
-        <StyleInput label="Title" value={content.title} onChange={val => onContentChange({...content, title: val})} />
-        <StyleInput label="Text" value={content.text} onChange={val => onContentChange({...content, text: val})} />
-    </>
-);
+const FeatureGridProperties = ({ element, content = {}, onContentChange }: { element: Element; content: any; onContentChange: (c: any) => void; }) => {
+    const { dispatch } = useEditorContext();
+    
+    const gridContainer = element.children?.[1];
+
+    const handleAddFeatureBlock = () => {
+        if (!gridContainer) {
+            console.error("Feature grid container not found!");
+            return;
+        }
+
+        const newElement = createNewElement('feature-block') as Element;
+        dispatch({
+            type: 'ADD_ELEMENT',
+            payload: {
+                elements: [newElement],
+                parentId: gridContainer.id,
+                index: gridContainer.children?.length || 0
+            }
+        });
+    };
+
+    const handleColumnCountChange = (count: number) => {
+        if (!gridContainer) return;
+
+        onContentChange({ ...content, columnCount: count });
+
+        dispatch({
+            type: 'UPDATE_ELEMENT_STYLES',
+            payload: {
+                elementId: gridContainer.id,
+                styles: { gridTemplateColumns: `repeat(${count}, 1fr)` },
+                breakpoint: 'desktop',
+                state: 'default'
+            }
+        });
+    };
+
+    return (
+        <div>
+            <StyleInput
+                label="Columns"
+                type="select"
+                value={content.columnCount || 3}
+                onChange={val => handleColumnCountChange(Number(val))}
+                options={[1, 2, 3, 4, 5, 6].map(v => ({ label: `${v} Column${v > 1 ? 's' : ''}`, value: v }))}
+            />
+            <div className="my-4 border-t border-gray-700"></div>
+            <button
+                onClick={handleAddFeatureBlock}
+                className="w-full flex items-center justify-center gap-2 bg-indigo-600 py-2 rounded-md hover:bg-indigo-500 text-sm"
+            >
+                <FaPlus size={12} /> Add Feature Block
+            </button>
+            <p className="text-xs text-gray-400 mt-2">Select an individual feature block in the canvas to edit its content.</p>
+        </div>
+    );
+};
+FeatureGridProperties.displayName = 'FeatureGridProperties';
+
+
+const FeatureBlockProperties = ({ content, onContentChange }: { content: any; onContentChange: (c: any) => void }) => {
+    const handleAIGenerate = async (prompt: string) => {
+        const fullPrompt = `Generate a short title and a one-sentence description for a website feature block about "${prompt}". Return ONLY a clean JSON object with "title" and "text" keys. Example: {"title": "AI-Powered Insights", "text": "Unlock powerful analytics with our intelligent dashboard."}`;
+        try {
+            const result = await generateContentWithGemini(fullPrompt);
+            const cleanedResult = result.replace(/```json/g, '').replace(/```/g, '').trim();
+            const newContent = JSON.parse(cleanedResult);
+            if (newContent.title && newContent.text) {
+                onContentChange({ ...content, title: newContent.title, text: newContent.text });
+            } else {
+                 alert("AI response was not in the expected format. Please try again.");
+            }
+        } catch (e) {
+            console.error("AI Generation Error:", e);
+            alert("Failed to generate or parse AI content.");
+        }
+    };
+
+    return (
+        <>
+            <StyleInput
+                label="Icon"
+                type="select"
+                value={content.icon}
+                onChange={val => onContentChange({ ...content, icon: val })}
+                options={lucideIconOptions}
+            />
+            <StyleInput label="Title" value={content.title} onChange={val => onContentChange({ ...content, title: val })} />
+            <StyleInput label="Text" value={content.text} onChange={val => onContentChange({ ...content, text: val })} />
+            <AIContentGenerator
+                onGenerate={handleAIGenerate}
+                promptPlaceholder="e.g., 'real-time collaboration'"
+            />
+        </>
+    );
+};
 FeatureBlockProperties.displayName = 'FeatureBlockProperties';
 
-const StepBlockProperties = ({ content, onContentChange }: { content: any; onContentChange: (c: any) => void }) => (
-    <>
-        <StyleInput label="Step Number" value={content.step} onChange={val => onContentChange({...content, step: val})} />
-        <StyleInput label="Title" value={content.title} onChange={val => onContentChange({...content, title: val})} />
-        <StyleInput label="Text" value={content.text} onChange={val => onContentChange({...content, text: val})} />
-    </>
-);
+const StepBlockProperties = ({ element }: { element: Element; }) => {
+    const { dispatch } = useEditorContext();
+
+    const handleAIGenerate = async (prompt: string) => {
+        const fullPrompt = `Generate a short title and a one-sentence description for a step in a process about "${prompt}". Return ONLY a clean JSON object with "title" and "text" keys. Example: {"title": "Create Your Account", "text": "Sign up in seconds with your email address."}`;
+        try {
+            const result = await generateContentWithGemini(fullPrompt);
+            const cleanedResult = result.replace(/```json/g, '').replace(/```/g, '').trim();
+            const newContent = JSON.parse(cleanedResult);
+
+            if (newContent.title && newContent.text && element.children && element.children.length >= 3) {
+                const titleElementId = element.children[1].id;
+                const textElementId = element.children[2].id;
+
+                dispatch({
+                    type: 'UPDATE_ELEMENT_CONTENT',
+                    payload: { elementId: titleElementId, content: `<h3>${newContent.title}</h3>` }
+                });
+                dispatch({
+                    type: 'UPDATE_ELEMENT_CONTENT',
+                    payload: { elementId: textElementId, content: `<p>${newContent.text}</p>` }
+                });
+                dispatch({ type: 'ADD_HISTORY' });
+            } else {
+                alert("AI response was not in the expected format or element children are missing.");
+            }
+        } catch (e) {
+            console.error("AI Generation Error:", e);
+            alert("Failed to generate or parse AI content.");
+        }
+    };
+
+    return (
+        <>
+            <p className="text-xs text-gray-400 mb-2">Use AI to generate content for this step, or click the individual elements on the canvas to edit them.</p>
+            <AIContentGenerator
+                onGenerate={handleAIGenerate}
+                promptPlaceholder="e.g., 'signing up for a newsletter'"
+            />
+            <ChildElementSelector element={element} />
+        </>
+    );
+};
 StepBlockProperties.displayName = 'StepBlockProperties';
 
 const FaqProperties = ({ content, onContentChange }: { content: any; onContentChange: (c: any) => void }) => {
@@ -2351,53 +2749,6 @@ const FaqProperties = ({ content, onContentChange }: { content: any; onContentCh
     );
 };
 FaqProperties.displayName = 'FaqProperties';
-
-const StepsProperties = ({ element, content, onContentChange }: { element: Element; content: any; onContentChange: (c: any) => void }) => {
-    const { dispatch } = useEditorContext();
-    const columnsElement = element.children?.find(child => child.type === 'columns');
-    
-    if (!columnsElement) return <p>Error: Could not find columns element.</p>;
-    
-    const handleStepCountChange = (newCount: number) => {
-      const getUniqueId = (type: ElementType) => `${type}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      const createNewElement = (type: ElementType): Element => ({ id: getUniqueId(type), type, styles: { desktop: { default: {}, hover: {} }, tablet: { default: {}, hover: {} }, mobile: { default: {}, hover: {} } }, content: JSON.stringify({ step: '0' + (newCount), title: 'New Step', text: 'Explain the new step.' }) });
-    
-      const currentContent = JSON.parse(columnsElement.content);
-      const currentCount = currentContent.columns.length;
-    
-      if (newCount > currentCount) {
-        const newColumns = [...currentContent.columns];
-        for (let i = currentCount; i < newCount; i++) {
-          newColumns.push({
-            id: getUniqueId('column_internal'),
-            children: [createNewElement('step-block')]
-          });
-        }
-        const newContentString = JSON.stringify({ ...currentContent, columns: newColumns }, null, 2);
-        dispatch({ type: 'UPDATE_ELEMENT_CONTENT', payload: { elementId: columnsElement.id, content: newContentString } });
-      } else if (newCount < currentCount) {
-        const newColumns = currentContent.columns.slice(0, newCount);
-        const newContentString = JSON.stringify({ ...currentContent, columns: newColumns }, null, 2);
-        dispatch({ type: 'UPDATE_ELEMENT_CONTENT', payload: { elementId: columnsElement.id, content: newContentString } });
-      }
-    };
-    
-    const currentColumnCount = JSON.parse(columnsElement.content).columns.length;
-    
-    return (
-      <div>
-        <StyleInput
-          label="Number of Steps"
-          type="select"
-          value={currentColumnCount}
-          onChange={val => handleStepCountChange(Number(val))}
-          options={[1, 2, 3, 4, 5, 6].map(v => ({ label: `${v} Step${v > 1 ? 's' : ''}`, value: v }))}
-        />
-        <p className="text-xs text-gray-400 mt-2">Select a step in the canvas to edit its content.</p>
-      </div>
-    );
-};
-StepsProperties.displayName = 'StepsProperties';
 
 const ContactFormProperties = ({ content, onContentChange }: { content: any; onContentChange: (c: any) => void }) => {
     const handleFieldChange = (index: number, field: 'label' | 'type', value: string) => {
@@ -2437,3 +2788,126 @@ const ContactFormProperties = ({ content, onContentChange }: { content: any; onC
     )
 };
 ContactFormProperties.displayName = 'ContactFormProperties';
+
+const SplitSectionProperties = ({ element, content, onContentChange }: { element: Element, content: any, onContentChange: (c: any) => void }) => {
+    const { dispatch } = useEditorContext();
+    const isVideo = element.type.includes('video');
+    
+    const handleAddElement = () => {
+        const newElement = createNewElement('heading') as Element;
+        dispatch({
+            type: 'ADD_ELEMENT',
+            payload: {
+                elements: [newElement],
+                parentId: element.id,
+                index: element.children?.length || 0
+            }
+        });
+    };
+
+    return (
+        <>
+            <StyleInput 
+                label={isVideo ? "Video URL" : "Image URL"}
+                value={isVideo ? content.videoUrl : content.imageSrc} 
+                onChange={val => onContentChange({ ...content, [isVideo ? 'videoUrl' : 'imageSrc']: val })} 
+            />
+            <div className="my-4 border-t border-gray-700"></div>
+            <h4 className="text-sm font-bold mb-2">Content Area</h4>
+            <p className="text-xs text-gray-400 mb-2">Add elements to the content area by dragging them onto the canvas or using the button below.</p>
+            <button
+                onClick={handleAddElement}
+                className="w-full flex items-center justify-center gap-2 bg-indigo-600 py-2 rounded-md hover:bg-indigo-500 text-sm"
+            >
+                <FaPlus size={12} /> Add Element
+            </button>
+        </>
+    );
+};
+SplitSectionProperties.displayName = 'SplitSectionProperties';
+
+
+const HeroSlideComponent = ({
+  element,
+  props,
+  dropProps,
+  renderChildren,
+}: {
+  element: Element;
+  props: any;
+  dropProps: any;
+  renderChildren: any;
+}) => {
+  const content = JSON.parse(element.content || '{}');
+
+  const getYouTubeVideoId = (url: string) => {
+    if (!url) return null;
+    const regExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(regExp);
+    return match ? match[1] : null;
+  };
+  const isYouTube = (url: string) => /youtube\.com|youtu\.be/.test(url ?? '');
+  const videoId = isYouTube(content.backgroundVideoUrl) ? getYouTubeVideoId(content.backgroundVideoUrl) : null;
+  const youTubeSrc = videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0` : '';
+
+  return (
+    <div {...props} className="relative w-full h-full overflow-hidden">
+      {content.backgroundType === 'image' && content.backgroundImageUrl && (
+        <img
+          src={content.backgroundImageUrl}
+          alt="background"
+          className="absolute top-0 left-0 w-full h-full object-cover z-0"
+        />
+      )}
+      {content.backgroundType === 'video' && content.backgroundVideoUrl && (
+        isYouTube(content.backgroundVideoUrl) && youTubeSrc ? (
+          <iframe
+            src={youTubeSrc}
+            frameBorder="0"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+            title="Background Video"
+            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 z-0"
+          ></iframe>
+        ) : (
+          <video
+            src={content.backgroundVideoUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 object-cover z-0"
+          />
+        )
+      )}
+      <div
+        className="relative z-10 w-full h-full flex flex-col"
+        {...dropProps}
+      >
+        {renderChildren(element.children || [], element.id)}
+      </div>
+    </div>
+  );
+};
+HeroSlideComponent.displayName = 'HeroSlideComponent';
+
+const HeroSlideProperties = ({ element, content, onContentChange }: { element: Element, content: any, onContentChange: (c: any) => void }) => {
+    return (
+        <>
+            <StyleInput
+                label="Background Type"
+                type="select"
+                value={content.backgroundType}
+                onChange={val => onContentChange({ ...content, backgroundType: val })}
+                options={[ { label: 'Image', value: 'image' }, { label: 'Video', value: 'video' } ]}
+            />
+            {content.backgroundType === 'image' ? (
+                <StyleInput label="Background Image URL" value={content.backgroundImageUrl} onChange={val => onContentChange({ ...content, backgroundImageUrl: val })} />
+            ) : (
+                <StyleInput label="Background Video URL" value={content.backgroundVideoUrl} onChange={val => onContentChange({ ...content, backgroundVideoUrl: val })} />
+            )}
+            <ChildElementSelector element={element} />
+        </>
+    );
+};
+HeroSlideProperties.displayName = 'HeroSlideProperties';

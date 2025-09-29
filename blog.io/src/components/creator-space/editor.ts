@@ -8,7 +8,10 @@ export type ElementType =
   | 'image'
   | 'video'
   | 'text-field'
-  | 'blocks';
+  | 'blocks'
+  | 'steps'
+  | 'step-block'
+  | 'step-connector';
 
 export interface Element {
   id: string;
